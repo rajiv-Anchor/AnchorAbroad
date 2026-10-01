@@ -1,0 +1,9 @@
+{
+  "orderCode":"PIZZA MAKER","country":"Oman","headline":"PIZZERIA RECRUITMENT OPPORTUNITY","status":"Recruiting",
+  "logoUrl":"https://YOUR_PUBLIC_LOGO_URL/logo.png","heroImageUrl":"https://YOUR_APPROVED_IMAGE_URL/pizza.jpg",
+  "roles":[
+    {"title":"Neapolitan Pizza Maker","vacancies":"Not stated","localSalary":"OMR 160–200 / MONTH","inrSalary":"₹40,022–₹50,027"},
+    {"title":"Assistant Pizza Maker","vacancies":"Not stated","localSalary":"OMR 140 / MONTH","inrSalary":"₹35,019"}
+  ],
+  "facts":[{"label":"Working hours","value":"10 hours","icon":"TIME"},{"label":"Accommodation","value":"Provided","icon":"HOME"},{"label":"Transportation","value":"Provided","icon":"BUS"},{"label":"Other","value":"Immediate travel","icon":"DOC"}]
+}

@@ -1,0 +1,31 @@
+name: Render Anchor Abroad Poster
+on:
+  repository_dispatch:
+    types: [poster_render]
+  workflow_dispatch:
+    inputs:
+      poster_json_base64:
+        description: Base64 encoded poster JSON
+        required: true
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Render and upload
+        env:
+          POSTER_JSON_BASE64: ${{ github.event.client_payload.poster_json_base64 || inputs.poster_json_base64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
+        run: node scripts/render-upload.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: poster
+          path: output/poster.png

@@ -1,0 +1,11 @@
+{
+  "orderCode":"FINANCE","country":"Oman","headline":"HOSPITALITY MANAGEMENT OPPORTUNITIES","status":"Recruiting",
+  "logoUrl":"https://YOUR_PUBLIC_LOGO_URL/logo.png","heroImageUrl":"https://YOUR_APPROVED_IMAGE_URL/hospitality.jpg",
+  "roles":[
+    {"title":"Training Manager","vacancies":"Not stated","localSalary":"OMR 1,200–1,300","inrSalary":"₹300,164–₹325,177"},
+    {"title":"Supply Chain Manager","vacancies":"Not stated","localSalary":"OMR 1,250–1,350","inrSalary":"₹312,670–₹337,684"},
+    {"title":"Finance Manager","vacancies":"Not stated","localSalary":"OMR 1,250–1,350","inrSalary":"₹312,670–₹337,684"},
+    {"title":"F&B Area Manager","vacancies":"Not stated","localSalary":"OMR 1,100–1,200","inrSalary":"₹275,150–₹300,164"}
+  ],
+  "facts":[{"label":"Age range","value":"30–45 years","icon":"AGE"},{"label":"Experience","value":"4–5 years in Casual Dining","icon":"EX"},{"label":"Benefits","value":"Accommodation and transportation allowances; health insurance","icon":"BEN"}]
+}

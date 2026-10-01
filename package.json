@@ -1,0 +1,13 @@
+{
+  "name": "anchor-abroad-poster-generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render.js",
+    "test": "node scripts/validate-samples.js"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "playwright": "^1.55.0"
+  }
+}

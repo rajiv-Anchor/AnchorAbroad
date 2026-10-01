@@ -14,7 +14,7 @@ Unknown fields are omitted. `#ERROR!`, missing salaries, missing logo, and missi
 
 ## GitHub setup
 
-Add repository secrets:
+Create a repository and copy this package into it. Add repository secrets:
 
 - `GOOGLE_SERVICE_ACCOUNT_JSON`: a Google service-account JSON object.
 - `DRIVE_FOLDER_ID`: `1XeQdM1Rkqw_4lDCQ2GBUcnqMCK_C4_EM`.
@@ -50,7 +50,7 @@ Reload the spreadsheet. Select one to four approved job rows and choose:
 
 ## Accuracy rules
 
-- The supplied official Anchor Abroad logo is bundled in `assets/anchor-abroad-official.png`; no CSS recreation is used.
+- The supplied official Anchor Abroad logo is bundled in `assets/anchor-abroad-logo.png`; no CSS recreation is used.
 - Blank/unknown fields are not printed.
 - INR is read from `Salary in INR`; it is never recalculated in the poster renderer.
 - Any spreadsheet error token blocks rendering.

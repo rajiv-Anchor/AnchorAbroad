@@ -1,0 +1,15 @@
+{
+  "orderCode": "BAKERY PASTRY",
+  "country": "Saudi Arabia",
+  "headline": "BAKERY & PASTRY RECRUITMENT OPPORTUNITY",
+  "status": "Recruiting",
+  "logoUrl": "https://YOUR_PUBLIC_LOGO_URL/logo.png",
+  "heroImageUrl": "https://YOUR_APPROVED_IMAGE_URL/bakery.jpg",
+  "roles": [{"title":"Bakery & Pastry Chef","vacancies":"","localSalary":"UP TO SAR 2,800 / MONTH","inrSalary":"UP TO ₹71,223 / MONTH"}],
+  "facts": [
+    {"label":"Skills","value":"Strong bakery & pastry production experience","icon":"SK"},
+    {"label":"Food allowance","value":"SAR 200/month","icon":"MEAL"},
+    {"label":"Accommodation","value":"Provided","icon":"HOME"},
+    {"label":"Transportation","value":"Provided","icon":"BUS"}
+  ]
+}
