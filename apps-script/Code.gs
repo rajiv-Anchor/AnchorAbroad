@@ -86,7 +86,8 @@ function dispatch_(payload, props, requestId) {
   const owner = requiredProperty_(props, 'GITHUB_OWNER');
   const repo = requiredProperty_(props, 'GITHUB_REPO');
   const token = requiredProperty_(props, 'GITHUB_TOKEN');
-  const body = { event_type: 'poster_render', client_payload: { poster_json_base64: Utilities.base64Encode(JSON.stringify(payload)), request_id: requestId } };
+  const jsonBytes = Utilities.newBlob(JSON.stringify(payload), 'application/json').getBytes();
+  const body = { event_type: 'poster_render', client_payload: { poster_json_base64: Utilities.base64Encode(jsonBytes), request_id: requestId } };
   const res = UrlFetchApp.fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
     method: 'post', contentType: 'application/json', payload: JSON.stringify(body), muteHttpExceptions: true,
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }

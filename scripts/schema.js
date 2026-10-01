@@ -1,4 +1,4 @@
-const BAD = /#ERROR!|#N\/A|#VALUE!|undefined|null/i;
+const BAD = /#ERROR!|#N\/A|#VALUE!|^undefined$|^null$/i;
 
 export function clean(value) {
   if (value === undefined || value === null) return "";
