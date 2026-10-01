@@ -109,7 +109,14 @@ function waitForPoster_(payload, props, requestId) {
     const artifacts = JSON.parse(list.getContentText()).artifacts || [];
     const artifact = artifacts.find(a => !a.expired && a.name === artifactName);
     if (!artifact) continue;
-    const zipResponse = UrlFetchApp.fetch(artifact.archive_download_url, { headers, followRedirects: true, muteHttpExceptions: true });
+    const redirectResponse = UrlFetchApp.fetch(artifact.archive_download_url, { headers, followRedirects: false, muteHttpExceptions: true });
+    if (![302, 303, 307].includes(redirectResponse.getResponseCode())) {
+      throw new Error(`Artifact redirect failed: ${redirectResponse.getResponseCode()} ${redirectResponse.getContentText()}`);
+    }
+    const redirectHeaders = redirectResponse.getAllHeaders();
+    const downloadUrl = redirectHeaders.Location || redirectHeaders.location;
+    if (!downloadUrl) throw new Error('GitHub did not provide an artifact download URL.');
+    const zipResponse = UrlFetchApp.fetch(downloadUrl, { followRedirects: true, muteHttpExceptions: true });
     if (zipResponse.getResponseCode() !== 200) throw new Error(`Artifact download failed: ${zipResponse.getResponseCode()}`);
     const files = Utilities.unzip(zipResponse.getBlob());
     const png = files.find(b => /poster\.png$/i.test(b.getName()));
