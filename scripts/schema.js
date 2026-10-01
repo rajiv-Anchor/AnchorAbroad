@@ -40,6 +40,6 @@ export function validatePoster(input) {
   poster.facts = poster.facts
     .map(f => ({ label: clean(f.label), value: clean(f.value), icon: clean(f.icon || "•") }))
     .filter(f => f.label && f.value && !/^unknown$|^not stated$/i.test(f.value))
-    .slice(0, 8);
+    .slice(0, 14);
   return poster;
 }

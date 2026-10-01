@@ -33,6 +33,10 @@
   .fact-label{font-weight:900;font-size:18px}.fact-value{margin-top:4px;font-size:20px;line-height:1.18}
   .footer{position:absolute;left:28px;right:28px;bottom:24px;height:70px;border-radius:18px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;letter-spacing:1px}
   .count-4 + .facts .fact{min-height:92px}
+  .count-1 + .facts{gap:10px;padding-top:16px}
+  .count-1 + .facts .fact{min-height:96px;padding:13px 18px}
+  .count-1 + .facts .fact-icon{width:54px;height:54px;font-size:20px}
+  .count-1 + .facts .fact-value{font-size:19px}
 </style>
 </head>
 <body>
@@ -40,7 +44,7 @@
 <script>
 const data=__POSTER_DATA__;
 const esc=s=>String(s??"").replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
-const role=r=>`<section class="role"><div class="role-top"><div class="role-title">${esc(r.title)}</div>${r.vacancies?`<div class="vacancies">${esc(r.vacancies)}<small>VACANCIES</small></div>`:""}</div><div class="salary"><div class="salary-local">${esc(r.localSalary)}</div><div class="salary-inr">Approx. INR ${esc(r.inrSalary)}</div></div></section>`;
+const role=r=>`<section class="role"><div class="role-top"><div class="role-title">${esc(r.title)}</div>${r.vacancies?`<div class="vacancies">${esc(r.vacancies)}<small>VACANCIES</small></div>`:""}</div><div class="salary"><div class="salary-local">${esc(r.localSalary)}</div><div class="salary-inr">INR equivalent: ${esc(String(r.inrSalary).replace(/\s*[–-]\s*/g," – "))}</div></div></section>`;
 const fact=f=>`<div class="fact"><div class="fact-icon">${esc(f.icon)}</div><div><div class="fact-label">${esc(f.label)}</div><div class="fact-value">${esc(f.value)}</div></div></div>`;
 document.querySelector("#poster").innerHTML=`
  <header class="hero"><img class="hero-photo" crossorigin="anonymous" src="${esc(data.heroImageUrl)}"><div class="gold-cut"></div><div class="brand-window"><img class="brand" src="${esc(data.logoUrl)}"></div><div class="hero-copy"><div class="headline">${esc(data.headline)}</div><div class="country">${esc(data.country)}</div><div class="status"><span>Order Code: ${esc(data.orderCode||"—")}</span><span>Status: ${esc(data.status)}</span></div></div></header>

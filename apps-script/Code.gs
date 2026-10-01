@@ -48,13 +48,18 @@ function generatePosterFromSelection() {
 
 function buildFacts_(r) {
   const candidates = [
-    ['Experience', years_(r['Experience Min (Years)'], r['Experience Max (Years)']), 'EX'],
+    ['Location', [r.City, r.Country].filter(valid_).join(', '), 'LOC'],
+    ['Experience', experience_(r), 'EX'],
     ['Age range', years_(r['Age Min'], r['Age Max']), 'AGE'],
+    ['Gender', r.Gender, 'GEN'],
+    ['Nationality', r.Nationality, 'NAT'],
+    ['Requirements', r.Education || r['Skills / Keywords'], 'REQ'],
     ['Language', r.Language, 'LANG'],
-    ['Working hours', r['Duty Hours'], 'TIME'],
+    ['Work schedule', workSchedule_(r), 'TIME'],
     ['Meals', r.Food, 'MEAL'],
     ['Accommodation', r.Accommodation, 'HOME'],
     ['Transportation', r.Transport, 'BUS'],
+    ['Air ticket', r['Air Ticket'], 'AIR'],
     ['Contract term', r['Contract Months'] ? `${r['Contract Months']} months` : '', 'DOC']
   ];
   return candidates.filter(x => valid_(x[1])).map(x => ({ label: x[0], value: x[1], icon: x[2] }));
@@ -63,8 +68,30 @@ function buildFacts_(r) {
 function salaryLocal_(r) {
   const min = r['Salary Min'], max = r['Salary Max'], cur = r.Currency || '';
   if (!valid_(min) && !valid_(max)) throw new Error(`Missing salary for ${r.Position}`);
-  if ((!valid_(min) || Number(min) === 0) && valid_(max)) return `UP TO ${cur} ${max}`;
-  return `${cur} ${min}${valid_(max) && max !== min ? '–' + max : ''} ${r['Salary Period'] || ''}`.trim();
+  if ((!valid_(min) || Number(min) === 0) && valid_(max)) return `UP TO ${cur} ${formatNumber_(max)}${period_(r)}`;
+  return `${cur} ${formatNumber_(min)}${valid_(max) && max !== min ? ' – ' + formatNumber_(max) : ''}${period_(r)}`.trim();
+}
+
+function formatNumber_(value) {
+  const number = Number(String(value).replace(/,/g, ''));
+  return Number.isFinite(number) ? number.toLocaleString('en-IN') : value;
+}
+
+function period_(r) {
+  const value = valid_(r['Salary Period']) ? String(r['Salary Period']).toLowerCase() : '';
+  return value ? ` / ${value.replace(/ly$/, '')}` : '';
+}
+
+function experience_(r) {
+  const notes = String(r['Reviewer Notes'] || '');
+  if (/no (prior )?experience required/i.test(notes)) return 'No prior experience required';
+  return years_(r['Experience Min (Years)'], r['Experience Max (Years)']);
+}
+
+function workSchedule_(r) {
+  const hours = valid_(r['Duty Hours']) ? r['Duty Hours'] : '';
+  const match = String(r['Reviewer Notes'] || '').match(/\b(\d+)\s*days?\/week\b/i);
+  return [hours, match ? `${match[1]} days/week` : ''].filter(valid_).join('; ');
 }
 
 function years_(min, max) {
