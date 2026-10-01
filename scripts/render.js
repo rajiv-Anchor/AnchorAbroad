@@ -20,7 +20,10 @@ const template = await fs.readFile(templatePath, "utf8");
 const html = template.replace("__POSTER_DATA__", JSON.stringify(data).replace(/</g, "\\u003c"));
 await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: process.env.CHROME_PATH || undefined
+});
 try {
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   await page.setContent(html, { waitUntil: "networkidle" });

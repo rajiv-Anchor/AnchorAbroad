@@ -22,10 +22,10 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
       - name: Render poster
         env:
           POSTER_JSON_BASE64: ${{ github.event.client_payload.poster_json_base64 || inputs.poster_json_base64 }}
+          CHROME_PATH: /usr/bin/google-chrome
         run: |
           mkdir -p output
           echo "$POSTER_JSON_BASE64" | base64 --decode > output/input.json
