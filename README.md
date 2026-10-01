@@ -6,20 +6,15 @@ Deterministic 1080 × 1920 recruitment posters without AI-image or Codex credits
 
 1. Select 1–4 approved rows in `Jobs Master`.
 2. Apps Script validates the values and dispatches a GitHub Action.
-3. Playwright renders the locked HTML template into PNG.
-4. The Action uploads the PNG to `01_INBOX_JOB_POSTERS`.
+3. Playwright renders the locked HTML template into PNG and stores it briefly as a GitHub artifact.
+4. Apps Script downloads the PNG and saves it to `01_INBOX_JOB_POSTERS`.
 5. Existing Make scenario `01 AA-JOBS-01 — Poster Intake & AI Extraction` adds it to the approval workflow.
 
 Unknown fields are omitted. `#ERROR!`, missing salaries, missing logo, and missing hero imagery stop generation.
 
 ## GitHub setup
 
-Create a repository and copy this package into it. Add repository secrets:
-
-- `GOOGLE_SERVICE_ACCOUNT_JSON`: a Google service-account JSON object.
-- `DRIVE_FOLDER_ID`: `1XeQdM1Rkqw_4lDCQ2GBUcnqMCK_C4_EM`.
-
-Share `01_INBOX_JOB_POSTERS` with the service-account email as Editor.
+No Google service account or repository secret is required. GitHub artifacts are retained for one day; the permanent poster is stored in Google Drive.
 
 Run once locally before committing:
 
@@ -40,7 +35,7 @@ Add these Script Properties:
 
 - `GITHUB_OWNER`
 - `GITHUB_REPO`
-- `GITHUB_TOKEN` (fine-grained token limited to Actions/Contents for this repository)
+- `GITHUB_TOKEN` (fine-grained token with Contents write and Actions read access for this repository)
 - `HERO_GENERAL`
 - optional role mappings such as `HERO_MANUFACTURING`, `HERO_HEALTHCARE`, `HERO_BAKERY`
 

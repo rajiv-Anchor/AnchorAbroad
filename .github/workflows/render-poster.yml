@@ -7,6 +7,10 @@ on:
       poster_json_base64:
         description: Base64 encoded poster JSON
         required: true
+      request_id:
+        description: Request identifier used for the artifact name
+        required: false
+        default: manual
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -19,13 +23,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - name: Render and upload
+      - name: Render poster
         env:
           POSTER_JSON_BASE64: ${{ github.event.client_payload.poster_json_base64 || inputs.poster_json_base64 }}
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
-        run: node scripts/render-upload.js
+        run: |
+          mkdir -p output
+          echo "$POSTER_JSON_BASE64" | base64 --decode > output/input.json
+          node scripts/render.js output/input.json output/poster.png
       - uses: actions/upload-artifact@v4
         with:
-          name: poster
+          name: poster-${{ github.event.client_payload.request_id || inputs.request_id }}
           path: output/poster.png
+          retention-days: 1

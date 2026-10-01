@@ -1,4 +1,5 @@
 const JOBS_SHEET = 'Jobs Master';
+const POSTER_INBOX_FOLDER_ID = '1XeQdM1Rkqw_4lDCQ2GBUcnqMCK_C4_EM';
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Anchor Posters')
@@ -39,8 +40,10 @@ function generatePosterFromSelection() {
     facts
   };
   validatePayload_(payload);
-  dispatch_(payload, props);
-  SpreadsheetApp.getUi().alert('Poster queued for rendering. It will enter 01_INBOX_JOB_POSTERS and then the existing approval workflow.');
+  const requestId = Utilities.getUuid();
+  dispatch_(payload, props, requestId);
+  const file = waitForPoster_(payload, props, requestId);
+  SpreadsheetApp.getUi().alert(`Poster created: ${file.getName()}\nIt is now in 01_INBOX_JOB_POSTERS and will enter the existing approval workflow.`);
 }
 
 function buildFacts_(r) {
@@ -79,14 +82,40 @@ function validatePayload_(p) {
   if (!p.heroImageUrl) throw new Error('An approved hero image is required.');
 }
 
-function dispatch_(payload, props) {
+function dispatch_(payload, props, requestId) {
   const owner = requiredProperty_(props, 'GITHUB_OWNER');
   const repo = requiredProperty_(props, 'GITHUB_REPO');
   const token = requiredProperty_(props, 'GITHUB_TOKEN');
-  const body = { event_type: 'poster_render', client_payload: { poster_json_base64: Utilities.base64Encode(JSON.stringify(payload)) } };
+  const body = { event_type: 'poster_render', client_payload: { poster_json_base64: Utilities.base64Encode(JSON.stringify(payload)), request_id: requestId } };
   const res = UrlFetchApp.fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
     method: 'post', contentType: 'application/json', payload: JSON.stringify(body), muteHttpExceptions: true,
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }
   });
   if (res.getResponseCode() !== 204) throw new Error(`GitHub dispatch failed: ${res.getResponseCode()} ${res.getContentText()}`);
+}
+
+function waitForPoster_(payload, props, requestId) {
+  const owner = requiredProperty_(props, 'GITHUB_OWNER');
+  const repo = requiredProperty_(props, 'GITHUB_REPO');
+  const token = requiredProperty_(props, 'GITHUB_TOKEN');
+  const artifactName = `poster-${requestId}`;
+  const headers = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
+  const listUrl = `https://api.github.com/repos/${owner}/${repo}/actions/artifacts?name=${encodeURIComponent(artifactName)}`;
+  for (let attempt = 0; attempt < 30; attempt++) {
+    Utilities.sleep(10000);
+    const list = UrlFetchApp.fetch(listUrl, { headers, muteHttpExceptions: true });
+    if (list.getResponseCode() !== 200) throw new Error(`Artifact lookup failed: ${list.getResponseCode()} ${list.getContentText()}`);
+    const artifacts = JSON.parse(list.getContentText()).artifacts || [];
+    const artifact = artifacts.find(a => !a.expired && a.name === artifactName);
+    if (!artifact) continue;
+    const zipResponse = UrlFetchApp.fetch(artifact.archive_download_url, { headers, followRedirects: true, muteHttpExceptions: true });
+    if (zipResponse.getResponseCode() !== 200) throw new Error(`Artifact download failed: ${zipResponse.getResponseCode()}`);
+    const files = Utilities.unzip(zipResponse.getBlob());
+    const png = files.find(b => /poster\.png$/i.test(b.getName()));
+    if (!png) throw new Error('Rendered artifact did not contain poster.png.');
+    const fileName = `${payload.orderCode || 'JOB'}_${payload.roles.map(r => r.title).join('_')}_Anchor_Abroad_Approval.png`
+      .replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 180);
+    return DriveApp.getFolderById(POSTER_INBOX_FOLDER_ID).createFile(png.setName(fileName));
+  }
+  throw new Error('Poster rendering did not finish within five minutes. Check the GitHub Actions run.');
 }
