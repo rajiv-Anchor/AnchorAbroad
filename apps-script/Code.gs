@@ -74,7 +74,7 @@ function salaryLocal_(r) {
 
 function formatNumber_(value) {
   const number = Number(String(value).replace(/,/g, ''));
-  return Number.isFinite(number) ? number.toLocaleString('en-IN') : value;
+  return Number.isFinite(number) ? number.toLocaleString('en-US') : value;
 }
 
 function period_(r) {
@@ -148,7 +148,8 @@ function waitForPoster_(payload, props, requestId) {
     const files = Utilities.unzip(zipResponse.getBlob());
     const png = files.find(b => /poster\.png$/i.test(b.getName()));
     if (!png) throw new Error('Rendered artifact did not contain poster.png.');
-    const fileName = `${payload.orderCode || 'JOB'}_${payload.roles.map(r => r.title).join('_')}_Anchor_Abroad_Approval.png`
+    const stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || 'Etc/UTC', 'yyyyMMdd_HHmmss');
+    const fileName = `${payload.orderCode || 'JOB'}_${payload.roles.map(r => r.title).join('_')}_Anchor_Abroad_Approval_${stamp}.png`
       .replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 180);
     return DriveApp.getFolderById(POSTER_INBOX_FOLDER_ID).createFile(png.setName(fileName));
   }
